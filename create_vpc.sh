@@ -32,8 +32,8 @@ else
         fi    
     done                
 fi
-vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr --query Vpc.VpcId --output text) 
-aws ec2 create-tags --resources $vpc_id  --tags Key=Name,Value=$vpc_name
+vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr --tag-specifications "ResourceType=vpc,Tags=[{Key=Name,Value=$vpc_name}]"  --query Vpc.VpcId --output text) 
+#aws ec2 create-tags --resources $vpc_id  --tags Key=Name,Value=$vpc_name
 #aws ec2 create-vpc --cidr-block  $vpc_cidr --output text | awk '{print $NF}' | xargs aws ec2 create-tags --tags Key=Name,Value=$vpc_name --resources
 echo
 echo -e "${NC} ==== Created VPC details ===="
@@ -44,7 +44,7 @@ echo
 echo "************ Security Group ! ************"
 echo "   Choose The type of security Group you want to create ||{**}||${GREEN}"  
 PS3='Select a security group ingress rule and press Enter: ' 
-options=("SSH port Only" "SSH and HTTP" "SSH ,HTTP, and HTTPS")
+options=("SSH port Only" "SSH, HTTP, and HTTPS" "SSH ,HTTP,RDP, and HTTPS")
 select opt in "${options[@]}"
 do
   case $opt in
@@ -53,15 +53,15 @@ do
           aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound SSH access"}]'
           break
           ;;
-        "SSH and HTTP")
+        "SSH, HTTP, and HTTPS")
           sg_id=$(aws ec2 create-security-group --group-name sg_$vpc_name --description "SSH and HTTP" --vpc-id $vpc_id --query GroupId --output text) 
           aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound SSH access"}]' IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTP access "}]'
           break
           ;;
           
-        "SSH ,HTTP, and HTTPS")
+        "SSH ,HTTP,RDP, and HTTPS")
           sg_id=$(aws ec2 create-security-group --group-name sg_$vpc_name --description "SSH ,HTTP, and HTTPS" --vpc-id $vpc_id --query GroupId --output text) 
-          aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound SSH access"}]' IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTP access "}]' IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTPS access"}]'
+          aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound SSH access"}]' IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTP access "}]' IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTPS access"}]' IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound RDP access"}]'
           break
           ;;               
         *) echo "invalid option";;

@@ -46,7 +46,7 @@ exit 1
  fi 
 done 
 echo "${GREEN} Create Route Table ${NC}"
-rt_id=$(aws ec2 create-route-table   --vpc-id $vpc_id --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=$sub_name}]" --query 'RouteTable.{RouteTableId:RouteTableId}' --output text ) #--region $AWS_REGION       
+rt_id=$(aws ec2 create-route-table   --vpc-id $vpc_id --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=rt_$sub_name}]" --query 'RouteTable.{RouteTableId:RouteTableId}' --output text ) #--region $AWS_REGION       
 echo "${GREEN} Create route to Internet Gateway for Route Table ID '$rt_id'.${NC}" 
 aws ec2 create-route --route-table-id $rt_id --destination-cidr-block 0.0.0.0/0 --gateway-id $igw_id  #--region $AWS_REGION
 echo ...
