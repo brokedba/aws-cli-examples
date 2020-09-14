@@ -1,13 +1,16 @@
 #!/bin/bash
 # Author Brokedba https://twitter.com/BrokeDba
-
+RED=$'\e\033[0;31m'
+GREEN=$'\e\033[0;32m'
+BLUE=$'\e\033[1;34m'
+NC=$'\e\033[0m' # No Color
 echo "******* amazon Image Selecta ! ************"
-echo "Choose your Destiny ||{**}||" 
-echo
+echo "Choose your Destiny ||{**}||${GREEN} " 
+echo 
 PS3='Select an option and press Enter: '
 options=("RHEL" "CentOS" "amazon Linux 2" "Ubuntu" "Windows" "Suse" "Exit?")
 select opt in "${options[@]}"
-do
+do 
   case $opt in
         "RHEL")
           aws ec2 describe-images --owners 309956199498  --filters 'Name=name,Values=RHEL-8.*' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].{Name:Name,Ami:ImageId,Created:CreationDate,SizeGb:BlockDeviceMappings[:1].Ebs.VolumeSize|[0]}' --output table
@@ -36,6 +39,6 @@ do
           ;;                              
         *) echo "invalid option";;
   esac
-done
+done 
 echo "*********************"
 #ocid_img=$(oci compute image list -c $C --operating-system "Oracle Linux" --operating-system-version "7.8" --shape "VM.Standard2.1"   --query 'data[0].id'  --raw-output)

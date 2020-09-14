@@ -36,7 +36,7 @@ if [ -n "$sub_id" ];
      echo selected subnet name : ${GREEN}$sub_name${NC} 
      if  [ -n "$sub_id" ];
      then echo
-     echo " ${GREEN}Internet gateway and subnet exist => Seting up the default Route table${NC}"
+     echo " ${GREEN}Internet gateway and subnet exist => Seting up the new Route table${NC}"
      echo ...
      break
      else echo " ${RED}The entered Subnet name doesn't exist for $vpc_name. Please retry!${NC}";
@@ -53,7 +53,7 @@ echo ...
 echo  " ${GREEN} Associate '$sub_name' Subnet with the Route Table.${NC}"
 aws ec2 associate-route-table --subnet-id $sub_id --route-table-id $rt_id  #--region $AWS_REGION
  echo
-echo "====${GREEN} Default Route table entries for $sub_name ${NC}===="
+echo "====${GREEN} Custom Route table entries for $sub_name ${NC}===="
 echo
  aws ec2 describe-route-tables  --route-table-id $rt_id --query 'RouteTables[*].{rt_id:RouteTableId,Vpc_id:VpcId, Main:Associations[].Main| [0],Routes:Routes,Name:Tags[?Key==`Name`].Value| [0]}'
 asos_id=$(aws ec2 describe-route-tables --query "RouteTables[].Associations[?SubnetId =='$sub_id'].RouteTableAssociationId[]" --output text)
