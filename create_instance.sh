@@ -1,7 +1,6 @@
 #!/bin/bash
 # Author Brokedba https://twitter.com/BrokeDba
-echo "******* Oci instance launch ! ************"
-echo "Choose your Shape ||{**}||" 
+echo "******* AWS instance launch ! ************"
 echo
 RED=$'\e\033[0;31m'
 GREEN=$'\e\033[0;32m'
@@ -126,11 +125,11 @@ done
            fi
            if [ -z "$sg_80" ];
            then echo "${BLUE}opening Port 80${NC}"
-           aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTPS access "}]'
+           aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTP access "}]'
            fi
            if [ -z "$sg_443" ];
            then echo "${BLUE}opening Port 443${NC}"
-           aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=433,ToPort=433,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTP access "}]'
+           aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=433,ToPort=433,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTPS access "}]'
            fi
       else  echo  "3. dedicated security Group ingress rules exists  PORT (22,80)."
          # Your current security groups don't have ports 3389 open
@@ -190,8 +189,8 @@ do
           img_id=$(aws ec2 describe-images --owners 801119661308  --filters 'Name=name,Values=Windows_Server-*English-Full-Base*' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text)
           userdata="--user-data file://cloud-init/Win_userdata.txt"
           OS="Windows"
-          echo "${BLUE} opening} port 3389 ${NC}"
-          aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound HTTP access "}]'
+          echo "${BLUE} opening port 3389 ${NC}"
+          aws ec2 authorize-security-group-ingress --group-id $sg_id --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=0.0.0.0/0,Description="Inbound RDP access "}]'
           break
           ;;
         "Suse")
@@ -251,6 +250,6 @@ echo "The generated password can be retreived few minutes later using : aws ec2 
 else
 echo "ssh connection to the instance ==> sudo ssh -i ~/id_rsa_aws ${user}@${pub_ip}"
 fi
-echo "${BLUE} Your website is ready at this IP :) :${GREEN} http://${pub_ip} ${NC} "
+ echo "${BLUE} Your website is ready at this IP :) :${GREEN} http://${pub_ip} ${NC} "
 echo "termination command ==>${RED} aws ec2 terminate-instances --instance-ids $instance_id ${NC}" 
  
