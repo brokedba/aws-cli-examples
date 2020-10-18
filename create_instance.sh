@@ -248,7 +248,7 @@ echo "Windows User = ${GREEN}Administrator${NC} "
 echo "Password     => ${GREEN}$password${NC} "
 echo "The generated password can be retreived few minutes later using : aws ec2 get-password-data --instance-id $instance_id --priv-launch-key ~/id_rsa_aws"
 else
-echo "ssh connection to the instance ==> sudo ssh -i ~/id_rsa_aws ${user}@${pub_ip}"
+echo "ssh connection to the instance ==> sudo ssh -i ~/id_rsa_aws ${user}@${pub_ip}" # if private-key is in the same path as the public-key use: echo ${public_key} | awk -F. '{print $1}'
 fi
  echo "${BLUE} Your website is ready at this IP :) :${GREEN} http://${pub_ip} ${NC} "
 echo "termination command ==>${RED} aws ec2 terminate-instances --instance-ids $instance_id ${NC}" 
