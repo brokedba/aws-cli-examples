@@ -6,7 +6,7 @@ See my [blog post](https://brokedba.blogspot.com/2020/09/launch-ec2-instance-wit
 - OCI-CLI https://github.com/brokedba/oci-cli-examples
 - AZURE-CLI https://github.com/brokedba/az-cli-examples 
 # Preview
- # OS : Ubunto
+ # OS : Ubuntu
 ![Preview1](https://github.com/brokedba/aws-cli-examples/blob/master/cloud-init/ubuntu_ec2demo.gif?raw=true)
 # OS: Windows server 2016
 ![Preview2](https://brokedba.files.wordpress.com/2020/09/image-5.png?w=1024)
